@@ -37,7 +37,6 @@ public class PilotAndAlien extends ApplicationAdapter {
 	float gravity = 0.25f; // Yer çekimi
 	float distance = 0;
 	Random random;
-	Circle planeCircle;
 	ShapeRenderer shapeRenderer;
 	int score = 0;
 	int level = 1;
@@ -47,9 +46,10 @@ public class PilotAndAlien extends ApplicationAdapter {
 	float[] alienOffset1 = new float[numberOfAliens];
 	float[] alienOffset2 = new float[numberOfAliens];
 	float[] alienOffset3 = new float[numberOfAliens];
-	Circle[] enemyCircles1 = new Circle[numberOfAliens];
-	Circle[] enemyCircles2 = new Circle[numberOfAliens];
-	Circle[] enemyCircles3 = new Circle[numberOfAliens];
+	Circle planeCircle; // Uçak hitboxı
+	Circle[] alienCircles1 = new Circle[numberOfAliens]; // Uzaylı hitboxları
+	Circle[] alienCircles2 = new Circle[numberOfAliens];
+	Circle[] alienCircles3 = new Circle[numberOfAliens];
 	BitmapFont fontScoreAndLevel;
 	BitmapFont fontOver;
 	BitmapFont fontEndScore;
@@ -57,8 +57,8 @@ public class PilotAndAlien extends ApplicationAdapter {
 	@Override
 	// Oyun açıldığında yapılacaklar
 	public void create() {
-		deviceSizeWith = Gdx.graphics.getWidth();
-		deviceSizeHeight = Gdx.graphics.getHeight();
+		deviceSizeWith = Gdx.graphics.getWidth(); // Kullanılan cihazın eni
+		deviceSizeHeight = Gdx.graphics.getHeight(); // Kullanılan cihazın boyu
 		batch = new SpriteBatch();
 		distance = deviceSizeWith / 2;
 		random = new Random();
@@ -71,12 +71,12 @@ public class PilotAndAlien extends ApplicationAdapter {
 			alienXAxis[i] = deviceSizeWith - alien1.getWidth() / 2 + i * (deviceSizeWith / 2);
 			giveAlienOffset(i);
 			// Uzaylıların hitbox tanımlamaları
-			enemyCircles1[i] = new Circle();
-			enemyCircles2[i] = new Circle();
-			enemyCircles3[i] = new Circle();
+			alienCircles1[i] = new Circle();
+			alienCircles2[i] = new Circle();
+			alienCircles3[i] = new Circle();
 		}
 		setFont();
-		jumpSound = Gdx.audio.newSound(Gdx.files.internal("click.wav"));
+		jumpSound = Gdx.audio.newSound(Gdx.files.internal("click.wav")); // Zıplama sesi
 	}
 
 	@Override
@@ -137,9 +137,9 @@ public class PilotAndAlien extends ApplicationAdapter {
 				batch.draw(alien1, alienXAxis[i], deviceSizeHeight / 2 + alienOffset2[i], deviceSizeWith / 12, deviceSizeHeight / 8);
 				batch.draw(alien1, alienXAxis[i], deviceSizeHeight / 2 + alienOffset3[i], deviceSizeWith / 12, deviceSizeHeight / 8);
 				// Uzaylıların etrafına görünmez hitbox veriyoruz
-				enemyCircles1[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset1[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
-				enemyCircles2[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset2[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
-				enemyCircles3[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset3[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
+				alienCircles1[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset1[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
+				alienCircles2[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset2[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
+				alienCircles3[i] = new Circle(alienXAxis[i] + deviceSizeWith / 24, deviceSizeHeight / 2 + alienOffset3[i] + deviceSizeHeight / 16, deviceSizeWith / 24);
 			}
 			// Uçağın y ekseni değeri 0 dan büyük ise aşağıdakiler yapılıyor 0 dan küçük ise
 			// uçağın ekrandan aşağı geçmesine izin verilmiyor oyun durumu 2 yapılıyor
@@ -179,9 +179,9 @@ public class PilotAndAlien extends ApplicationAdapter {
 				for (int i = 0; i < numberOfAliens; i++) {
 					alienXAxis[i] = deviceSizeWith - alien1.getWidth() / 2 + i * (deviceSizeWith / 2);
 					giveAlienOffset(i);
-					enemyCircles1[i] = new Circle();
-					enemyCircles2[i] = new Circle();
-					enemyCircles3[i] = new Circle();
+					alienCircles1[i] = new Circle();
+					alienCircles2[i] = new Circle();
+					alienCircles3[i] = new Circle();
 				}
 				velocityPlane = 0;
 				score = 0;
@@ -205,7 +205,7 @@ public class PilotAndAlien extends ApplicationAdapter {
 			//shapeRenderer.circle(alienXAxis[i]+deviceSizeWith/24,deviceSizeHeight/2+alienOffset2[i]+deviceSizeHeight/16,deviceSizeWith/24);
 			//shapeRenderer.circle(alienXAxis[i]+deviceSizeWith/24,deviceSizeHeight/2+alienOffset3[i]+deviceSizeHeight/16,deviceSizeWith/24);
 			// Eğer uçağın hitboxsı herhangi bir uzaylının hitboxına dokunursa oyun durumu 2 olur oyun durur.
-			if (Intersector.overlaps(planeCircle, enemyCircles1[i]) || Intersector.overlaps(planeCircle, enemyCircles2[i]) || Intersector.overlaps(planeCircle, enemyCircles3[i])) {
+			if (Intersector.overlaps(planeCircle, alienCircles1[i]) || Intersector.overlaps(planeCircle, alienCircles2[i]) || Intersector.overlaps(planeCircle, alienCircles3[i])) {
 				gameStatus = 2;
 				// Uçağın pozisyonu y ekseninin ortasına gelir
 				planeYAxis = deviceSizeHeight / 2;
